@@ -1,4 +1,4 @@
-package co.edu.javeriana.pica;
+package co.edu.javeriana.pica.front;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;

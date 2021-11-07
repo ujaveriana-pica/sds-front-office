@@ -1,0 +1,77 @@
+{ "type": "autorizacion-titulos",
+  "title": "Registro y autorización de títulos en el área de salud",
+  "form": {
+    "type": "object",
+    "properties": {
+      "institucion": {
+        "type": "string",
+        "title": "Institución educativa: ",
+        "enum": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "enumNames": [
+          "Pontificia universidad Javeriana",
+          "Universidad los libertadores",
+          "Universidad Distrital",
+          "Universidad Nacional",
+          "Universidad Pedagógica",
+          "Universidad del Rosario"
+        ]
+      },
+      "profesion": {
+        "type": "string",
+        "title": "Profesión: "
+      },
+      "diploma": {
+        "type": "string",
+        "title": "Diploma No.: "
+      },
+      "acta": {
+        "type": "string",
+        "title": "Acta de grado: "
+      },
+      "fecha": {
+        "type": "string",
+        "title": "Fecha de terminación: "
+      },
+      "libro": {
+        "type": "string",
+        "title": "Libro: "
+      },
+      "folio": {
+        "type": "string",
+        "title": "Folio: "
+      },
+      "anioTitulo": {
+        "type": "integer",
+        "format": "date",
+        "title": "Año titulo: "
+      }
+    },
+    "required": [
+      "institucion",
+      "profesion",
+      "fecha",
+      "anioTitulo"
+    ]
+  },
+  "uploads": [
+    {
+      "type": "documento-identificacion",
+      "title": "Documento de identificación"
+    },
+    {
+      "type": "diploma",
+      "title": "Diploma de grado"
+    },
+    {
+      "type": "acta",
+      "title": "Acta de grado"
+    }
+  ]
+}
