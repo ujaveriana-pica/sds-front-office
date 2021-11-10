@@ -12,8 +12,8 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
 
-@Path("/schema")
-public class SchemaController {
+@Path("/front-office/esquema")
+public class EsquemaController {
 
     @GET
     @Path("/{id}")
@@ -22,7 +22,7 @@ public class SchemaController {
         ObjectMapper mapper = new ObjectMapper();
         ClassLoader classLoader = getClass().getClassLoader();
         try (InputStream is = classLoader.getResourceAsStream(
-                String.format("schemas/%s.json", id))) {
+                String.format("esquemas/%s.json", id))) {
             if(is == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }

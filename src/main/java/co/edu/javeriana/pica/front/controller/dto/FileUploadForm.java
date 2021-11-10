@@ -1,4 +1,4 @@
-package co.edu.javeriana.pica.front.controller;
+package co.edu.javeriana.pica.front.controller.dto;
 
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
 import javax.ws.rs.FormParam;

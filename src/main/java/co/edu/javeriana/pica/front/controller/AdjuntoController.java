@@ -1,26 +1,23 @@
 package co.edu.javeriana.pica.front.controller;
 
-import co.edu.javeriana.pica.front.controller.dto.FormRequest;
-import co.edu.javeriana.pica.front.entity.Attachment;
-import co.edu.javeriana.pica.front.service.AttachmentService;
-import co.edu.javeriana.pica.front.service.FormService;
+import co.edu.javeriana.pica.front.controller.dto.FileUploadForm;
+import co.edu.javeriana.pica.front.entity.Adjunto;
+import co.edu.javeriana.pica.front.service.AdjuntoService;
+import co.edu.javeriana.pica.front.service.TramiteService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
-@Path("/attachments")
-public class AttachmentController {
+@Path("/front-office/adjunto")
+public class AdjuntoController {
 
-    private AttachmentService attachmentService;
-    private FormService formService;
+    private AdjuntoService attachmentService;
+    private TramiteService formService;
 
-    public AttachmentController(AttachmentService attachmentService, FormService formService) {
+    public AdjuntoController(AdjuntoService attachmentService, TramiteService formService) {
         this.attachmentService = attachmentService;
         this.formService = formService;
     }
@@ -35,8 +32,8 @@ public class AttachmentController {
                            @PathParam("uploadType") String uploadType) {
         try {
             attachmentService.save(formId, uploadType, uploadForm.getFileData());
-            Attachment att = new Attachment();
-            att.setType(uploadType);
+            Adjunto att = new Adjunto();
+            att.setTipo(uploadType);
             att.setUrl(uploadType);
             formService.addAttachment(formId, att);
             return Response.status(Response.Status.CREATED).build();
