@@ -45,6 +45,12 @@ public class TramiteController {
                 tramite.setId(it.getId().toString());
                 tramite.setEstado(it.getEstado());
                 tramite.setTipo(it.getTipo());
+                if(it.getFechaCreacion() != null) {
+                    tramite.setFechaCreacion(it.getFechaCreacion().toString());
+                }
+                if(it.getFechaRadicacion() != null) {
+                    tramite.setFechaRadicacion(it.getFechaRadicacion().toString());
+                }
                 return tramite;
             }).collect(Collectors.toList())
         ).build();

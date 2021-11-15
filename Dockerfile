@@ -18,6 +18,7 @@ VOLUME /tmp
 EXPOSE 8080
 
 ENV MONGO_HOST localhost
+ENV MONGO_CONNECTION mongodb
 ENV MONGO_PORT 27017
 ENV MONGO_DATABASE pica
 
@@ -25,4 +26,4 @@ ENV MONGO_DATABASE pica
 COPY --from=BUILD /usr/src/app/target/*.jar  quarkus-run.jar
 
 # Run the jar file 
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=prod", "-jar","/quarkus-run.jar"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar","/quarkus-run.jar"]

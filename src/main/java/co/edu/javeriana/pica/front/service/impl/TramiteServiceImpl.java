@@ -3,14 +3,22 @@ package co.edu.javeriana.pica.front.service.impl;
 import co.edu.javeriana.pica.front.controller.dto.RadicarResponse;
 import co.edu.javeriana.pica.front.entity.Adjunto;
 import co.edu.javeriana.pica.front.entity.Tramite;
+import co.edu.javeriana.pica.front.service.MetricsService;
 import co.edu.javeriana.pica.front.service.TramiteService;
 import co.edu.javeriana.pica.front.util.DateTimeUtil;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.bson.types.ObjectId;
 import javax.enterprise.context.ApplicationScoped;
 import java.util.List;
 
 @ApplicationScoped
 public class TramiteServiceImpl implements TramiteService {
+
+    private final MetricsService metricsService;
+
+    public TramiteServiceImpl(MetricsService metricsService) {
+        this.metricsService = metricsService;
+    }
 
     @Override
     public Tramite save(Tramite form) {
@@ -33,6 +41,7 @@ public class TramiteServiceImpl implements TramiteService {
             form.setEstado(ESTADO_RADICADO);
             form.setFechaRadicacion(DateTimeUtil.now());
             form.persistOrUpdate();
+            metricsService.incrementCounter(MetricsService.TRAMITES_RADICADOS);
             RadicarResponse response = new RadicarResponse();
             response.setCodigoRadicacion(form.getId().toString());
             return response;
