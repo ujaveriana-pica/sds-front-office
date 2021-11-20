@@ -7,12 +7,10 @@ import co.edu.javeriana.pica.front.messages.Notificacion;
 import co.edu.javeriana.pica.front.service.MetricsService;
 import co.edu.javeriana.pica.front.service.TramiteService;
 import co.edu.javeriana.pica.front.util.DateTimeUtil;
-import io.micrometer.core.instrument.MeterRegistry;
 import org.bson.types.ObjectId;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
-import org.eclipse.microprofile.reactive.messaging.Message;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -27,6 +25,8 @@ public class TramiteServiceImpl implements TramiteService {
     @Inject
     @Channel("notifications")
     Emitter<Notificacion> notificacionEmitter;
+    @ConfigProperty(name = "app.notifications.enable")
+    boolean notificationsEnable;
 
     public TramiteServiceImpl(MetricsService metricsService) {
         this.metricsService = metricsService;
@@ -62,8 +62,9 @@ public class TramiteServiceImpl implements TramiteService {
             vars.put("nombre", "Juan Carlos Castellanos");
             vars.put("tramiteId", form.getId().toString());
             notificacion.setVars(vars);
-            CompletionStage<Void> ack = notificacionEmitter.send(notificacion);
-
+            if(notificationsEnable) {
+                CompletionStage<Void> ack = notificacionEmitter.send(notificacion);
+            }
             RadicarResponse response = new RadicarResponse();
             response.setCodigoRadicacion(form.getId().toString());
             return response;

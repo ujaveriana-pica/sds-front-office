@@ -1,11 +1,17 @@
 package co.edu.javeriana.pica.front.controller;
 
+import co.edu.javeriana.pica.front.config.Constants;
+import co.edu.javeriana.pica.front.config.SecurityInterceptor;
 import co.edu.javeriana.pica.front.controller.dto.TramiteListResponse;
 import co.edu.javeriana.pica.front.controller.dto.TramiteRequest;
+import co.edu.javeriana.pica.front.entity.AuthUser;
 import co.edu.javeriana.pica.front.entity.Tramite;
 import co.edu.javeriana.pica.front.service.TramiteService;
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.stream.Collectors;
@@ -38,7 +44,8 @@ public class TramiteController {
     @GET
     @Path("/usuario/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response list(@PathParam("id") String id) {
+    public Response list(@PathParam("id") String id, @Context HttpHeaders headers) {
+        AuthUser authUser = SecurityInterceptor.getAuthUser(headers);
         return Response.status(Response.Status.OK).entity(
             tramiteService.listByUserId(id).stream().map(it -> {
                 TramiteListResponse tramite = new TramiteListResponse();
