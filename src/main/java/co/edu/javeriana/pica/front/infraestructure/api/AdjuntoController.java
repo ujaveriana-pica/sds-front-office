@@ -1,10 +1,8 @@
 package co.edu.javeriana.pica.front.infraestructure.api;
 
 import co.edu.javeriana.pica.front.infraestructure.api.dto.FileUploadForm;
-import co.edu.javeriana.pica.front.core.interfaces.AdjuntoRepository;
 import co.edu.javeriana.pica.front.core.interfaces.TramiteService;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -12,11 +10,9 @@ import javax.ws.rs.core.Response;
 @Path("/front-office/adjunto")
 public class AdjuntoController {
 
-    private AdjuntoRepository attachmentService;
     private TramiteService tramiteService;
 
-    public AdjuntoController(AdjuntoRepository attachmentService, TramiteService tramiteService) {
-        this.attachmentService = attachmentService;
+    public AdjuntoController(TramiteService tramiteService) {
         this.tramiteService = tramiteService;
     }
 

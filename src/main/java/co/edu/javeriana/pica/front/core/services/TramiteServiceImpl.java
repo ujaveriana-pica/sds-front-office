@@ -7,7 +7,6 @@ import co.edu.javeriana.pica.front.core.entities.Adjunto;
 import co.edu.javeriana.pica.front.core.interfaces.*;
 import co.edu.javeriana.pica.front.core.entities.AuthUser;
 import co.edu.javeriana.pica.front.core.entities.Notificacion;
-import co.edu.javeriana.pica.front.core.interfaces.MetricsPort;
 import co.edu.javeriana.pica.front.core.util.DateTimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
