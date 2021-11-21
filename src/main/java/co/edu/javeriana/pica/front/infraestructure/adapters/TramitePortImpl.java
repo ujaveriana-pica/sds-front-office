@@ -6,7 +6,6 @@ import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.concurrent.CompletionStage;
 
 @ApplicationScoped
 public class TramitePortImpl implements TramitePort {
@@ -17,6 +16,6 @@ public class TramitePortImpl implements TramitePort {
 
     @Override
     public void send(Tramite tramite) {
-        CompletionStage<Void> ack = emitterr.send(tramite);
+        emitterr.send(tramite);
     }
 }

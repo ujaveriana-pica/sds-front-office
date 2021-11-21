@@ -3,7 +3,7 @@ package co.edu.javeriana.pica.front.infraestructure.mapper;
 import co.edu.javeriana.pica.front.core.entities.User;
 import co.edu.javeriana.pica.front.infraestructure.data.UserData;
 
-public class UserMapper {
+public final class UserMapper {
 
     private UserMapper() {
 

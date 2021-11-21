@@ -2,7 +2,7 @@ package co.edu.javeriana.pica.front.core.util;
 
 import java.util.Date;
 
-public class DateTimeUtil {
+public final class DateTimeUtil {
 
     private DateTimeUtil() {
 

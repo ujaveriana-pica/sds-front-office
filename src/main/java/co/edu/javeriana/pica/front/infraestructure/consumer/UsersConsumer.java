@@ -15,7 +15,7 @@ public class UsersConsumer {
 
     private final UserService userService;
     private final MetricsPort metricsService;
-    Logger logger = LoggerFactory.getLogger(UsersConsumer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UsersConsumer.class);
 
     public UsersConsumer(UserService userService, MetricsPort metricsService) {
         this.userService = userService;
@@ -25,12 +25,12 @@ public class UsersConsumer {
     @Incoming("users")
     public CompletionStage<Void> consume(Message<User> msg) {
         User user = msg.getPayload();
-        if(user != null) {
+        if (user != null) {
             userService.save(user);
             metricsService.incrementCounter(MetricsPort.USUARIOS_REGISTRADOS);
-            logger.info("Usuario con userId: {} username: {} creado satisfactoriamente");
+            LOG.info("Usuario con userId: {} username: {} creado satisfactoriamente");
         } else {
-            logger.warn("Mensaje invalido, de descarta el mensaje de la cola");
+            LOG.warn("Mensaje invalido, de descarta el mensaje de la cola");
         }
         return msg.ack();
     }
