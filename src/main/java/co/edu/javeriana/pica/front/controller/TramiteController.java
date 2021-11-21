@@ -36,8 +36,7 @@ public class TramiteController {
     public Response create(TramiteRequest tramiteRequest, @Context HttpHeaders headers) {
         AuthUser authUser = SecurityInterceptor.getAuthUser(headers);
         Tramite tramite = tramiteRequest.toTramite();
-        tramite.setCreador(authUser.getUsername());
-        tramite = tramiteService.save(tramite);
+        tramite = tramiteService.save(tramite, authUser);
         return Response.status(Response.Status.OK).entity(tramite).build();
     }
 

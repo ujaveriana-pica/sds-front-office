@@ -12,7 +12,7 @@ public interface TramiteService {
     static final String ESTADO_BORRADOR = "borrador";
     static final String ESTADO_RADICADO = "radicado";
 
-    Tramite save(Tramite form);
+    Tramite save(Tramite form, AuthUser authUser);
     List<Tramite> listByUsername(String username);
     RadicarResponse radicar(String id, AuthUser authUser);
     void addAttachment(String id, Adjunto attachment);

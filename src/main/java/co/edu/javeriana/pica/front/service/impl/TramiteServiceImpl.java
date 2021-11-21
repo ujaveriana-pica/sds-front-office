@@ -29,9 +29,15 @@ import java.util.concurrent.CompletionStage;
 public class TramiteServiceImpl implements TramiteService {
 
     private final MetricsService metricsService;
+
     @Inject
     @Channel("notifications")
     Emitter<Notificacion> notificacionEmitter;
+
+    @Inject
+    @Channel("tramites")
+    Emitter<Tramite> tramitesEmitter;
+
     @ConfigProperty(name = "app.notifications.enable")
     boolean notificationsEnable;
     private final UserService userService;
@@ -43,16 +49,23 @@ public class TramiteServiceImpl implements TramiteService {
     }
 
     @Override
-    public Tramite save(Tramite form) {
-        form.setEstado(ESTADO_BORRADOR);
-        form.setFechaCreacion(DateTimeUtil.now());
-        form.persist();
-        return form;
+    public Tramite save(Tramite form, AuthUser authUser) {
+        Optional<User> user = userService.getByUsername(authUser.getUsername());
+        if(user.isPresent()) {
+            form.setEstado(ESTADO_BORRADOR);
+            form.setFechaCreacion(DateTimeUtil.now());
+            form.setCreador(user.get());
+            form.persist();
+            return form;
+        } else {
+            throw new RuntimeException(
+                    String.format("El tramite no pudo crearse, el usuario %s no existe en el micro.", authUser.getUsername()));
+        }
     }
 
     @Override
     public List<Tramite> listByUsername(String username) {
-        return Tramite.list("creador", username);
+        return Tramite.list("creador.username", username);
     }
 
     @Override
@@ -62,25 +75,26 @@ public class TramiteServiceImpl implements TramiteService {
             form.setEstado(ESTADO_RADICADO);
             form.setFechaRadicacion(DateTimeUtil.now());
             form.persistOrUpdate();
-            metricsService.incrementCounter(MetricsService.TRAMITES_RADICADOS);
+            tramitesEmitter.send(form);
             if(notificationsEnable) {
-                Optional<User> user = userService.getByUsername(authUser.getUsername());
-                if(user.isPresent()) {
+                User user = form.getCreador();
+                if(user != null) {
                     Notificacion notificacion = new Notificacion();
                     notificacion.setTemplate("tramite-radicado");
-                    notificacion.setTo(user.get().getEmail());
+                    notificacion.setTo(user.getEmail());
                     Map<String, String> vars = new HashMap<>();
-                    String name = user.get().getName() != null? user.get().getName(): "";
-                    String lastName = user.get().getLastName() != null? user.get().getLastName(): "";
+                    String name = user.getName() != null? user.getName(): "";
+                    String lastName = user.getLastName() != null? user.getLastName(): "";
                     vars.put("nombre", name + " " + lastName);
                     vars.put("tramiteId", form.getId().toString());
                     notificacion.setVars(vars);
                     CompletionStage<Void> ack = notificacionEmitter.send(notificacion);
                 }
                 else {
-                    logger.warn("No se ha enviado notificacion, el usuario no existe en el micro.");
+                    logger.warn("No se ha enviado notificacion, el tramite no tiene usuario creador.");
                 }
             }
+            metricsService.incrementCounter(MetricsService.TRAMITES_RADICADOS);
             RadicarResponse response = new RadicarResponse();
             response.setCodigoRadicacion(form.getId().toString());
             return response;

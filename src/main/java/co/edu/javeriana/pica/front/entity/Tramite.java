@@ -17,7 +17,7 @@ public class Tramite extends PanacheMongoEntity {
     private String tipo;
     private String estado;
     private List<Adjunto> adjuntos = new ArrayList<>();
-    private String creador;
+    private User creador;
     private Date fechaCreacion;
     private Date fechaRadicacion;
 
