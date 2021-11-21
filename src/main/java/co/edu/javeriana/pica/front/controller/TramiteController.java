@@ -1,6 +1,5 @@
 package co.edu.javeriana.pica.front.controller;
 
-import co.edu.javeriana.pica.front.config.Constants;
 import co.edu.javeriana.pica.front.config.SecurityInterceptor;
 import co.edu.javeriana.pica.front.controller.dto.TramiteListResponse;
 import co.edu.javeriana.pica.front.controller.dto.TramiteRequest;
@@ -9,7 +8,6 @@ import co.edu.javeriana.pica.front.entity.Tramite;
 import co.edu.javeriana.pica.front.service.TramiteService;
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -35,19 +33,21 @@ public class TramiteController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(TramiteRequest tramiteRequest) {
-        System.out.println("SAVE");
-        Tramite form = tramiteService.save(tramiteRequest.toTramite());
-        return Response.status(Response.Status.OK).entity(form).build();
+    public Response create(TramiteRequest tramiteRequest, @Context HttpHeaders headers) {
+        AuthUser authUser = SecurityInterceptor.getAuthUser(headers);
+        Tramite tramite = tramiteRequest.toTramite();
+        tramite.setCreador(authUser.getUsername());
+        tramite = tramiteService.save(tramite);
+        return Response.status(Response.Status.OK).entity(tramite).build();
     }
 
     @GET
-    @Path("/usuario/{id}")
+    @Path("/usuario/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response list(@PathParam("id") String id, @Context HttpHeaders headers) {
+    public Response list(@PathParam("username") String username, @Context HttpHeaders headers) {
         AuthUser authUser = SecurityInterceptor.getAuthUser(headers);
         return Response.status(Response.Status.OK).entity(
-            tramiteService.listByUserId(id).stream().map(it -> {
+            tramiteService.listByUsername(authUser.getUsername()).stream().map(it -> {
                 TramiteListResponse tramite = new TramiteListResponse();
                 tramite.setId(it.getId().toString());
                 tramite.setEstado(it.getEstado());
@@ -67,7 +67,8 @@ public class TramiteController {
     @Path("/radicar/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response radicar(@PathParam("id") String id) {
-        return Response.status(Response.Status.OK).entity(tramiteService.radicar(id)).build();
+    public Response radicar(@PathParam("id") String id, @Context HttpHeaders headers) {
+        AuthUser authUser = SecurityInterceptor.getAuthUser(headers);
+        return Response.status(Response.Status.OK).entity(tramiteService.radicar(id, authUser)).build();
     }
 }
