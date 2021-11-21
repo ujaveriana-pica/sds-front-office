@@ -4,9 +4,16 @@ import co.edu.javeriana.pica.front.core.entities.Radicacion;
 import co.edu.javeriana.pica.front.core.entities.Tramite;
 import co.edu.javeriana.pica.front.core.entities.User;
 import co.edu.javeriana.pica.front.core.entities.Adjunto;
-import co.edu.javeriana.pica.front.core.interfaces.*;
 import co.edu.javeriana.pica.front.core.entities.AuthUser;
 import co.edu.javeriana.pica.front.core.entities.Notificacion;
+import co.edu.javeriana.pica.front.core.interfaces.AdjuntoRepository;
+import co.edu.javeriana.pica.front.core.interfaces.MetricsPort;
+import co.edu.javeriana.pica.front.core.interfaces.TramiteRepository;
+import co.edu.javeriana.pica.front.core.interfaces.TramiteService;
+import co.edu.javeriana.pica.front.core.interfaces.NotificacionPort;
+import co.edu.javeriana.pica.front.core.interfaces.TramitePort;
+import co.edu.javeriana.pica.front.core.interfaces.ConfigPort;
+import co.edu.javeriana.pica.front.core.interfaces.UserService;
 import co.edu.javeriana.pica.front.core.util.DateTimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +34,7 @@ public class TramiteServiceImpl implements TramiteService {
     private final TramitePort tramitePort;
     private final ConfigPort configPort;
     private final UserService userService;
-    private static final Logger logger = LoggerFactory.getLogger(TramiteServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TramiteServiceImpl.class);
 
     public TramiteServiceImpl(MetricsPort metricsService, UserService userService,
                               TramiteRepository tramiteRepository, AdjuntoRepository adjuntoRepository,
@@ -44,14 +51,15 @@ public class TramiteServiceImpl implements TramiteService {
     @Override
     public Tramite save(Tramite tramite, AuthUser authUser) {
         Optional<User> user = userService.getByUsername(authUser.getUsername());
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             tramite.setEstado(ESTADO_BORRADOR);
             tramite.setFechaCreacion(DateTimeUtil.now());
             tramite.setCreador(user.get());
             return tramiteRepository.persist(tramite);
         } else {
             throw new RuntimeException(
-                    String.format("El tramite no pudo crearse, el usuario %s no existe en el micro.", authUser.getUsername()));
+                    String.format("El tramite no pudo crearse, el usuario %s no existe en el micro.",
+                            authUser.getUsername()));
         }
     }
 
@@ -67,22 +75,21 @@ public class TramiteServiceImpl implements TramiteService {
             tramite.setFechaRadicacion(DateTimeUtil.now());
             Tramite savedTramite = tramiteRepository.persistOrUpdate(tramite);
             tramitePort.send(savedTramite);
-            if(configPort.isNotificationsEnable()) {
+            if (configPort.isNotificationsEnable()) {
                 User user = tramite.getCreador();
-                if(user != null) {
+                if (user != null) {
                     Notificacion notificacion = new Notificacion();
                     notificacion.setTemplate("tramite-radicado");
                     notificacion.setTo(user.getEmail());
                     Map<String, String> vars = new HashMap<>();
-                    String name = user.getName() != null? user.getName(): "";
-                    String lastName = user.getLastName() != null? user.getLastName(): "";
+                    String name = user.getName() != null ? user.getName() : "";
+                    String lastName = user.getLastName() != null ? user.getLastName() : "";
                     vars.put("nombre", name + " " + lastName);
                     vars.put("tramiteId", savedTramite.getId().toString());
                     notificacion.setVars(vars);
                     notificacionPort.send(notificacion);
-                }
-                else {
-                    logger.warn("No se ha enviado notificacion, el tramite no tiene usuario creador.");
+                } else {
+                    LOG.warn("No se ha enviado notificacion, el tramite no tiene usuario creador.");
                 }
             }
             metricsService.incrementCounter(MetricsPort.TRAMITES_RADICADOS);

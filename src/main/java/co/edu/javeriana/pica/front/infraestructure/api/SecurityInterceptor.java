@@ -37,9 +37,9 @@ public class SecurityInterceptor implements ContainerRequestFilter {
     }
 
     private static Optional<String> getInternalToken(String base64Token) {
-        if(base64Token != null) {
+        if (base64Token != null) {
             String token = new String(Base64.getDecoder().decode(base64Token));
-            if(token.split(INTERNAL_TOKEN_SEPARATOR).length == 2) {
+            if (token.split(INTERNAL_TOKEN_SEPARATOR).length == 2) {
                 return Optional.of(token.trim());
             } else {
                 return Optional.empty();

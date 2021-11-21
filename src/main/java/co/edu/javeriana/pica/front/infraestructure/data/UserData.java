@@ -5,7 +5,7 @@ import io.quarkus.mongodb.panache.common.MongoEntity;
 import lombok.Data;
 
 @Data
-@MongoEntity(collection="user")
+@MongoEntity(collection = "user")
 public class UserData extends PanacheMongoEntity {
     private String userId;
     private String username;

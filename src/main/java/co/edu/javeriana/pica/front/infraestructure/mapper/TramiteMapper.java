@@ -7,7 +7,7 @@ import org.bson.types.ObjectId;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TramiteMapper {
+public final class TramiteMapper {
 
     private TramiteMapper() {
 
@@ -15,7 +15,7 @@ public class TramiteMapper {
 
     public static TramiteData entityToData(Tramite tramite) {
         TramiteData data = new TramiteData();
-        if(tramite.getId() != null) {
+        if (tramite.getId() != null) {
             data.setId(new ObjectId(tramite.getId()));
         }
         data.setData(tramite.getData());

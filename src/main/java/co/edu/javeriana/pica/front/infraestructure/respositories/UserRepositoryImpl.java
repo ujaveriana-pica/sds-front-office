@@ -19,7 +19,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> getByUsername(String username) {
         List<UserData> users = UserData.list("username", username);
-        if(!users.isEmpty()) {
+        if (!users.isEmpty()) {
             return Optional.of(UserMapper.dataToEntity(users.get(0)));
         }
         return Optional.empty();
