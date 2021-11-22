@@ -1,6 +1,8 @@
 FROM maven:3.6.3-jdk-11-slim as BUILD
 WORKDIR /usr/src/app
 COPY pom.xml .
+COPY checkstyle.xml .
+COPY checkstyle-supressions.xml .
 #RUN mvn dependency:go-offline
 COPY src src
 RUN mvn -B -e -C -T 1C package -Dquarkus.package.type=uber-jar
