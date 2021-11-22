@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-@MongoEntity(collection="tramite")
+@MongoEntity(collection = "tramite")
 public class TramiteData extends PanacheMongoEntity {
     private ObjectId id;
     private Map<String, String> data;

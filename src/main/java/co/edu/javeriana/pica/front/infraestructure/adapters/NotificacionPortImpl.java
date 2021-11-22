@@ -6,7 +6,6 @@ import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.concurrent.CompletionStage;
 
 @ApplicationScoped
 public class NotificacionPortImpl implements NotificacionPort {
@@ -17,6 +16,6 @@ public class NotificacionPortImpl implements NotificacionPort {
 
     @Override
     public void send(Notificacion notificacion) {
-        CompletionStage<Void> ack = notificacionEmitter.send(notificacion);
+        notificacionEmitter.send(notificacion);
     }
 }

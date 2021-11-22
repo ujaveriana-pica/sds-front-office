@@ -22,12 +22,12 @@ public class EsquemaController {
         ClassLoader classLoader = getClass().getClassLoader();
         try (InputStream is = classLoader.getResourceAsStream(
                 String.format("esquemas/%s.json", id))) {
-            if(is == null) {
+            if (is == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
             JsonNode actualObj = mapper.readTree(is);
             return Response.status(Response.Status.OK).entity(actualObj).build();
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
     }

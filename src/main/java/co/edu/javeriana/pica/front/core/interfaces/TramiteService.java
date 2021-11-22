@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface TramiteService {
 
-    static final String ESTADO_BORRADOR = "borrador";
-    static final String ESTADO_RADICADO = "radicado";
+    String ESTADO_BORRADOR = "borrador";
+    String ESTADO_RADICADO = "radicado";
 
     Tramite save(Tramite tramite, AuthUser authUser);
     List<Tramite> listByUsername(String username);

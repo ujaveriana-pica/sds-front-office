@@ -6,7 +6,12 @@ import co.edu.javeriana.pica.front.core.entities.AuthUser;
 import co.edu.javeriana.pica.front.core.entities.Tramite;
 import co.edu.javeriana.pica.front.core.interfaces.TramiteService;
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -50,10 +55,10 @@ public class TramiteController {
                 tramite.setId(it.getId().toString());
                 tramite.setEstado(it.getEstado());
                 tramite.setTipo(it.getTipo());
-                if(it.getFechaCreacion() != null) {
+                if (it.getFechaCreacion() != null) {
                     tramite.setFechaCreacion(it.getFechaCreacion().toString());
                 }
-                if(it.getFechaRadicacion() != null) {
+                if (it.getFechaRadicacion() != null) {
                     tramite.setFechaRadicacion(it.getFechaRadicacion().toString());
                 }
                 return tramite;
