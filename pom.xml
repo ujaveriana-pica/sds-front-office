@@ -16,6 +16,7 @@
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     <quarkus.platform.version>2.2.3.Final</quarkus.platform.version>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+    <jacoco.percentage.instruction>0.7</jacoco.percentage.instruction>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -62,6 +63,11 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-junit5-mockito</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -116,6 +122,58 @@
             <maven.home>${maven.home}</maven.home>
           </systemPropertyVariables>
         </configuration>
+      </plugin>
+      <!-- JaCoCo -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.4</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <!-- attached to Maven test phase -->
+          <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>jacoco-check</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <rule>
+                  <element>PACKAGE</element>
+                  <excludes>
+                    <exclude>co.edu.javeriana.pica.front.infraestructure.adapters</exclude>
+                    <exclude>co.edu.javeriana.pica.front.infraestructure.api</exclude>
+                    <exclude>co.edu.javeriana.pica.front.infraestructure.api.dto</exclude>
+                    <exclude>co.edu.javeriana.pica.front.infraestructure.consumer</exclude>
+                    <exclude>co.edu.javeriana.pica.front.infraestructure.data</exclude>
+                    <exclude>co.edu.javeriana.pica.front.infraestructure.exception</exclude>
+                    <exclude>co.edu.javeriana.pica.front.infraestructure.mapper</exclude>
+                    <exclude>co.edu.javeriana.pica.front.infraestructure.respositories</exclude>
+                    <exclude>co.edu.javeriana.pica.front.core.entities</exclude>
+                  </excludes>
+                  <limits>
+                    <limit>
+                      <counter>LINE</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>${jacoco.percentage.instruction}</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <!-- Checkstyle -->
       <plugin>
