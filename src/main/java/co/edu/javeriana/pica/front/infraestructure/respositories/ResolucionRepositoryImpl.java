@@ -2,10 +2,8 @@ package co.edu.javeriana.pica.front.infraestructure.respositories;
 
 import co.edu.javeriana.pica.front.core.interfaces.ResolucionRepository;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-
 import javax.enterprise.context.ApplicationScoped;
 import java.io.File;
-import java.util.Locale;
 import java.util.Optional;
 
 @ApplicationScoped
