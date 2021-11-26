@@ -6,6 +6,7 @@ import co.edu.javeriana.pica.front.core.entities.User;
 import co.edu.javeriana.pica.front.core.entities.Adjunto;
 import co.edu.javeriana.pica.front.core.entities.AuthUser;
 import co.edu.javeriana.pica.front.core.entities.Notificacion;
+import co.edu.javeriana.pica.front.core.interfaces.ResolucionRepository;
 import co.edu.javeriana.pica.front.core.interfaces.AdjuntoRepository;
 import co.edu.javeriana.pica.front.core.interfaces.MetricsPort;
 import co.edu.javeriana.pica.front.core.interfaces.TramiteRepository;
@@ -15,16 +16,19 @@ import co.edu.javeriana.pica.front.core.interfaces.TramitePort;
 import co.edu.javeriana.pica.front.core.interfaces.ConfigPort;
 import co.edu.javeriana.pica.front.core.interfaces.UserService;
 import co.edu.javeriana.pica.front.core.util.DateTimeUtil;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.List;
 
 @ApplicationScoped
+@RequiredArgsConstructor
 public class TramiteServiceImpl implements TramiteService {
 
     private final MetricsPort metricsService;
@@ -34,19 +38,8 @@ public class TramiteServiceImpl implements TramiteService {
     private final TramitePort tramitePort;
     private final ConfigPort configPort;
     private final UserService userService;
+    private final ResolucionRepository resolucionRepository;
     private static final Logger LOG = LoggerFactory.getLogger(TramiteServiceImpl.class);
-
-    public TramiteServiceImpl(MetricsPort metricsService, UserService userService,
-                              TramiteRepository tramiteRepository, AdjuntoRepository adjuntoRepository,
-                              NotificacionPort notificacionPort, TramitePort tramitePort, ConfigPort configPort) {
-        this.metricsService = metricsService;
-        this.userService = userService;
-        this.tramiteRepository = tramiteRepository;
-        this.adjuntoRepository = adjuntoRepository;
-        this.notificacionPort = notificacionPort;
-        this.tramitePort = tramitePort;
-        this.configPort = configPort;
-    }
 
     @Override
     public Tramite save(Tramite tramite, AuthUser authUser) {
@@ -114,5 +107,22 @@ public class TramiteServiceImpl implements TramiteService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Optional<File> resolucionDownload(String id) {
+        return resolucionRepository.download(id);
+    }
+
+    @Override
+    public void updateEstado(String id, String estado) {
+        if (estado != null) {
+            tramiteRepository.findById(id).map(tramite -> {
+                LOG.info("Estado de tramite con id {} actualizado", tramite.getId());
+                tramite.setEstado(estado.toLowerCase());
+                return tramiteRepository.persistOrUpdate(tramite);
+            });
+        }
+        LOG.warn("Tramite con estado nulo");
     }
 }

@@ -27,10 +27,11 @@ public class TramiteServiceImplTest {
     TramitePort tramitePort = mock(TramitePortImpl.class);
     ConfigPort configPort = mock(ConfigPortImpl.class);
     UserService userService = mock(UserServiceImpl.class);
+    ResolucionRepository resolucionRepository = mock(ResolucionRepository.class);
 
     private TramiteService getMockTramiteService() {
-        return new TramiteServiceImpl(metricsPort, userService, tramiteRepository, adjuntoRepository,
-                notificacionPort, tramitePort, configPort);
+        return new TramiteServiceImpl(metricsPort, tramiteRepository, adjuntoRepository,
+                notificacionPort, tramitePort, configPort, userService, resolucionRepository);
     }
 
     @Test
