@@ -19,7 +19,7 @@ public class TramitesConsumer {
         this.tramiteService = tramiteService;
     }
 
-    @Incoming("tramites")
+    @Incoming("tramites-in")
     public CompletionStage<Void> consume(Message<Tramite> msg) {
         Tramite tramite = msg.getPayload();
         if (tramite != null) {
