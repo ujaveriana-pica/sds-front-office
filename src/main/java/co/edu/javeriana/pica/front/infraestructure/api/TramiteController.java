@@ -74,4 +74,15 @@ public class TramiteController {
         AuthUser authUser = SecurityInterceptor.getAuthUser(headers);
         return Response.status(Response.Status.OK).entity(tramiteService.radicar(id, authUser)).build();
     }
+
+    @GET
+    @Path("/resolucion/{id}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response download(@PathParam("id") String id) {
+        return tramiteService.resolucionDownload(id).map(file -> {
+            Response.ResponseBuilder response = Response.ok((Object) file);
+            response.header("Content-Disposition", "attachment;filename=" + file);
+            return response.build();
+        }).orElse(Response.status(Response.Status.NOT_FOUND).build());
+    }
 }
